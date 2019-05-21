@@ -1,22 +1,25 @@
 <template>
+  <div v-if="productList.length>0">
+    <h3 class="text-center">Eklenen Ürünlerin Listesi</h3>
   <div class="row product-container">
     <app-product v-for="product in productList">
-      <img class="card-img-top" src="/src/assets/default.png" alt="Card image cap">
+      <img class="card-img-top" :src="product.selectedImage" :alt="product.title">
       <div class="card-body">
-        <h5 class="card-title">Card title</h5>
+        <h5 class="card-title">{{product.title}}</h5>
         <small>
-          <strong>Adet : </strong> 1
+          <strong>Adet : </strong> {{product.count}}
         </small>
         <br>
         <small>
-          <strong>Fiyat : </strong> 10
+          <strong>Fiyat : </strong> {{product.price}}
         </small>
         <br>
         <small>
-          <strong>Tutar : </strong> 10
+          <strong>Tutar : </strong>{{product.totalPrice}}
         </small>
       </div>
     </app-product>
+  </div>
   </div>
 </template>
 
@@ -37,7 +40,14 @@
       },
       created() {
           eventBus.$on("productAdded",(product)=>{
-            this.productList.push(product)
+            if(this.productList.length<10){
+              this.productList.push(product)
+              eventBus.$emit("progressBarUpdated",this.productList.length)
+            }
+            else{
+              alert("10'dan fazla ürün ekleyemezsiniz")
+            }
+
           })
       }
     }
